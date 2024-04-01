@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 export const FIELD_NAMES = {
     FIRST_NAME: {
         ID: 'firstname',
@@ -59,11 +61,13 @@ export const declarativeSchema = {
         }
     },
     [FIELD_NAMES.PHONE.ID]: {
-        label: FIELD_NAMES.EMAIL.LABEL,
+        label: FIELD_NAMES.PHONE.LABEL,
         conditions: {
-            type: "email",
-            required: true,
-            max: 50
+            type: "string",
+            required: false,
+            customValidation: value => {
+                return _.trim(value) === '' || `${value}`.match(regexForIndianPhoneNumber)
+            }
         }
     },
     [FIELD_NAMES.EDUCATION.ID]: {
@@ -82,8 +86,10 @@ export const declarativeSchema = {
                 conditions: {
                     type: "number",
                     required: true,
-                    max: 4,
-                    min: 4
+                    customValidation: value => {
+                        const currentYear = new Date().getFullYear();
+                        return value > currentYear - 60 && value <= currentYear
+                    }
                 }
             },
             [FIELD_NAMES.SCORE.ID]: {
@@ -101,3 +107,4 @@ export const declarativeSchema = {
 }
 
 const regex4Whole2decimalNumber = /^\d{1,4}(\.\d{1,2})?$/;
+const regexForIndianPhoneNumber = /^[9,8,7,6]+\d{9}$/;

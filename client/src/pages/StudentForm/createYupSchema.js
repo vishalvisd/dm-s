@@ -13,13 +13,16 @@ const declarativeSchemaAttributeHanlder = {
         }
     },
     required: function (yupSchemaObj) {
-        return yupSchemaObj.required('Mandatory Field');
+        if (this.conditions.required){
+            return yupSchemaObj.required('Mandatory Field');
+        }
+        return yupSchemaObj.notRequired('');
     },
     min: function (yupSchemaObj) {
-        return yupSchemaObj.min(this.conditions.min);
+        return yupSchemaObj.min(this.conditions.min, `Cannot be less than ${this.conditions.max}`);
     },
     max: function (yupSchemaObj) {
-        return yupSchemaObj.max(this.conditions.max);
+        return yupSchemaObj.max(this.conditions.max, `Cannot be more than ${this.conditions.max}`);
     },
     customValidation: function (yupSchemaObj) {
         return yupSchemaObj.test('Valid', 'Invalid', this.conditions.customValidation)
