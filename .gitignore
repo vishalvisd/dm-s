@@ -46,3 +46,5 @@ dist-ssr
 go.work
 
 .idea
+
+server/data/dm_student.db

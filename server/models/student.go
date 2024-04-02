@@ -40,7 +40,7 @@ const (
 )
 
 func ConnectDatabase() error {
-	db, err := sql.Open("sqlite3", fmt.Sprintf("./%s", DB_NAME))
+	db, err := sql.Open("sqlite3", fmt.Sprintf("./data/%s", DB_NAME))
 	if err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func ConnectDatabase() error {
 	// Commit to DB
 	db.Close()
 
-	db1, err := sql.Open("sqlite3", fmt.Sprintf("./%s", DB_NAME))
+	db1, err := sql.Open("sqlite3", fmt.Sprintf("./data/%s", DB_NAME))
 	DB = db1
 
 	return nil
