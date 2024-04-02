@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func checkErr(err error) {
@@ -89,13 +90,34 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
+func Logger() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Start timer
+		start := time.Now()
+
+		// Process request
+		c.Next()
+
+		// Log request
+		log.Printf(
+			"[%s] %s %s %s %d %s",
+			time.Now().Format("2020-01-01 13:04:05"),
+			c.ClientIP(),
+			c.Request.Method,
+			c.Request.URL.Path,
+			c.Writer.Status(),
+			time.Since(start),
+		)
+	}
+}
+
 func main() {
 	err := models.ConnectDatabase()
 	checkErr(err)
 
 	r := gin.Default()
 	r.Use(CORSMiddleware())
-
+	r.Use(Logger())
 	// API v1
 	v1 := r.Group("/api/v1")
 	{
