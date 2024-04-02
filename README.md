@@ -1,3 +1,4 @@
+
 ## Usage
 ### Recommended Way (with Docker)
 Please ensure **Docker** and **docker-compose** is installed on your system.
@@ -17,4 +18,10 @@ One Time => Run **(sudo) docker-compose build** at the root of the project
 Run the Application Stack => **(sudo) docker-compose up -d**
 > **docker-compose up -d**
 
-> open http://locahost:4173
+> open http://localhost:4173
+
+*
+
+> */server/data/ is bind mounted to backend container. sqlite database file: /server/data/dm_student.db*
+
+*
