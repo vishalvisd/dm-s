@@ -1,22 +1,20 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {useNavigate} from 'react-router-dom';
 import _ from "lodash";
-import { styled } from '@mui/material/styles';
-import {useForm, useFieldArray} from "react-hook-form";
+import {styled} from '@mui/material/styles';
+import {useFieldArray, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
-import {DevTool} from '@hookform/devtools';
-import {TextField, Button, Stack, Box, Paper, Grid, CircularProgress,
-    Snackbar, Alert
-} from "@mui/material";
+import {Alert, Box, Button, CircularProgress, Grid, Paper, Snackbar, Stack, TextField} from "@mui/material";
 import {declarativeSchema, FIELD_NAMES} from "./studentFormSchema.js";
 import createYupSchema from "./createYupSchema.js";
 import postData from "../../api/addStudent.js";
+import DeleteIcon from '@mui/icons-material/Delete';
 import "./styles.css";
 
 let schema = createYupSchema(declarativeSchema);
 const STACK_WIDTH = 800;
 const {FIRST_NAME, LAST_NAME, EMAIL, PHONE, EDUCATION, INSTITUTION, PASS_OUT_YEAR, SCORE} = FIELD_NAMES;
-const Item = styled(Paper)(({ theme }) => ({
+const Item = styled(Paper)(({theme}) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
     padding: theme.spacing(1),
@@ -34,28 +32,28 @@ function StudentForm() {
     const [isSaveError, setIsSaveError] = useState(false);
     const {register, handleSubmit, formState, control, reset} = useForm({
         defaultValues: {
-          [EDUCATION.ID]: [{
-              [INSTITUTION.ID]: "",
-              [PASS_OUT_YEAR.ID]: "",
-              [SCORE.ID]: ""
-          }]
+            [EDUCATION.ID]: [{
+                [INSTITUTION.ID]: "",
+                [PASS_OUT_YEAR.ID]: "",
+                [SCORE.ID]: ""
+            }]
         },
         resolver: yupResolver(schema),
     })
 
-    const {fields: educationFields, append: appendEducation} = useFieldArray({
+    const {fields: educationFields, append: appendEducation, remove: removeEducation} = useFieldArray({
         name: EDUCATION.ID,
         control
     });
 
     const {errors} = formState;
 
-    const onSubmit = async(data) => {
+    const onSubmit = async (data) => {
         setFormSubmitting(true)
-        const res = await postData(data).catch((e)=>{
+        const res = await postData(data).catch((e) => {
             console.log(e);
         })
-        if(res && res.success) {
+        if (res && res.success) {
             reset();
             setNotificationMessage("Submitted Successfully");
             setIsSaveError(false);
@@ -79,19 +77,23 @@ function StudentForm() {
     }
     return (
         <>
-            <Button
-                sx={{position: "fixed", margin: "10px", top:"5px", right: "5px"}}
-                variant="contained"
-                onClick={()=>{
-                    navigate("/all")
-                }}
-            >View All
-            </Button>
             <form noValidate onSubmit={handleSubmit(onSubmit)}>
                 <fieldset style={{border: "0px"}} disabled={formSubmitting}>
                     <Box sx={{flexGrow: 1}}>
                         <Grid container width={STACK_WIDTH + 40} spacing={5}>
                             <Grid item xs={12}>
+                                <Box sx={{float: "right"}}>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => {
+                                            navigate("/all")
+                                        }}
+                                    >View All
+                                    </Button>
+                                </Box>
+                            </Grid>
+                            <Grid style={{marginTop: 0, paddingTop: 0}} item xs={12}>
                                 <Box>
                                     Basic Details
                                 </Box>
@@ -169,7 +171,16 @@ function StudentForm() {
                                                     helperText={_.get(errors, `${EDUCATION.ID}.${index}.${SCORE.ID}.message`)}
                                                 />
                                             </Stack>
+                                            {
+                                                index !== 0 &&
+                                                <Box sx={{float: "right", margin: "10px"}} onClick={() => {
+                                                    removeEducation(index)
+                                                }}>
+                                                    <DeleteIcon fontSize="large"/>
+                                                </Box>
+                                            }
                                         </Item>
+
                                     </Grid>
                                 })
                             }</>
@@ -180,7 +191,7 @@ function StudentForm() {
                                 </Grid>
 
                                 <Grid item sx={{float: "right"}} xs={6}>
-                                    <Box sx={{m: 1, position: 'relative'}}>
+                                    <Box>
                                         <Button
                                             variant="contained"
                                             type="submit"
@@ -212,12 +223,12 @@ function StudentForm() {
             <Snackbar
                 open={showNotification}
                 autoHideDuration={3000}
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                anchorOrigin={{vertical: "bottom", horizontal: "right"}}
                 onClose={handleCloseSuccessMessage}>
                 <Alert
                     severity={isSaveError ? "warning" : "success"}
                     variant="filled"
-                    sx={{ width: '100%' }}
+                    sx={{width: '100%'}}
                 >
                     {notificationMessage}
                 </Alert>

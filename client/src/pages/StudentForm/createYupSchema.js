@@ -5,7 +5,7 @@ const declarativeSchemaAttributeHanlder = {
     type: function (yupSchemaObj) {
         if (this.schema) {
             return yupSchemaObj.array().of(createYupSchema(this.schema));
-        } else if (this.conditions){
+        } else if (this.conditions) {
             const type = this.conditions.type;
             return type === 'email'
                 ? yupSchemaObj.string().email("Please check E-mail format")
@@ -13,7 +13,7 @@ const declarativeSchemaAttributeHanlder = {
         }
     },
     required: function (yupSchemaObj) {
-        if (this.conditions.required){
+        if (this.conditions.required) {
             return yupSchemaObj.required('Mandatory Field');
         }
         return yupSchemaObj.notRequired('');
@@ -41,7 +41,7 @@ const createYupFieldSchema = (fieldSchema) => {
 
 const createYupSchema = (declarativeSchema) => {
     const shapeObject = {};
-    _.forOwn(declarativeSchema, (v, k)=>{
+    _.forOwn(declarativeSchema, (v, k) => {
         shapeObject[k] = createYupFieldSchema(v);
     });
     return yup.object().shape(shapeObject)

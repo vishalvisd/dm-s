@@ -1,7 +1,8 @@
 import _ from 'lodash';
+
 const baseUrl = "http://localhost:8080/api/v1";
 
-const handleServerResponse = async (serverResposne)=>{
+const handleServerResponse = async (serverResposne) => {
     return await serverResposne.json().then(res => {
         if (res.error) {
             return {
@@ -34,11 +35,11 @@ export const makePostRequest = async (path, data) => {
     return handleServerResponse(rawResponse);
 }
 
-const makeQueryString = (queryObject)=>{
+const makeQueryString = (queryObject) => {
     let queryString = '';
-    if (!_.isEmpty(queryObject)){
+    if (!_.isEmpty(queryObject)) {
         queryString += '?';
-        _.forOwn(queryObject, (v, k)=>{
+        _.forOwn(queryObject, (v, k) => {
             queryString += `${k}=${v}`;
         })
     }

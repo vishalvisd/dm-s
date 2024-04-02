@@ -32,7 +32,7 @@ const shades = {
 export default {
     palette: {
         primary: {
-            main:shades.primary[500],
+            main: shades.primary[500],
         },
         secondary: {
             main: shades.secondary[500],
